@@ -1,6 +1,17 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 
-const API_BASE = import.meta.env?.VITE_API_BASE || "http://127.0.0.1:8000";
+const ENV_API_BASE =
+  import.meta.env?.VITE_API_BASE_URL || import.meta.env?.VITE_API_BASE;
+const API_BASE = (() => {
+  if (ENV_API_BASE) return ENV_API_BASE;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host && host !== "localhost" && host !== "127.0.0.1") {
+      return "https://eclipse-backend-mu0l.onrender.com";
+    }
+  }
+  return "http://127.0.0.1:8000";
+})();
 
 async function safeFetchJson(url, options) {
   const res = await fetch(url, options);
