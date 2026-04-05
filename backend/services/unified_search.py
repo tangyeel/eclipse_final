@@ -71,6 +71,17 @@ def _slack_engine(x_token: Optional[str]) -> Optional[SlackSearchEngine]:
 def _gdrive_engine(x_token: Optional[str]) -> Optional[GDriveSearchEngine]:
     if x_token:
         return GDriveSearchEngine([x_token])
+    refresh_token = os.getenv("GDRIVE_REFRESH_TOKEN")
+    client_id = os.getenv("GDRIVE_CLIENT_ID")
+    client_secret = os.getenv("GDRIVE_CLIENT_SECRET")
+    if refresh_token and client_id and client_secret:
+        return GDriveSearchEngine([{
+            "access_token": "",
+            "refresh_token": refresh_token,
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "expires_at": 0,
+        }])
     env = os.getenv("GDRIVE_TOKENS") or ""
     if env.strip():
         return GDriveSearchEngine(_split_tokens(env))
